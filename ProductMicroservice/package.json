@@ -1,0 +1,26 @@
+{
+  "name": "product-microservice",
+  "version": "1.0.0",
+  "description": "Product management microservice for KFC application",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.1",
+    "nodemon": "^3.1.14",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
