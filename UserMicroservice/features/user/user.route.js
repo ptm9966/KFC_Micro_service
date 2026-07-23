@@ -259,4 +259,55 @@ userRouter.post("/verify", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /auth/singleuser:
+ *   post:
+ *     summary: Get user details from token or ID
+ *     description: Return the current user profile using the JWT token or the user ID.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: "<jwt-token> or <user-id>"
+ *     responses:
+ *       200:
+ *         description: User details retrieved
+ *       404:
+ *         description: User not found
+ */
+userRouter.post("/singleuser", async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).send({ message: "User token or ID is required" });
+    }
+
+    try {
+        let user;
+
+        if (typeof id === "string" && id.split(".").length === 3) {
+            const decoded = jwt.verify(id, process.env.JWT_SECRET || 'default-secret');
+            user = await Users.findById(decoded.userId).select("-passwordHash -passwordSalt");
+        } else {
+            user = await Users.findById(id).select("-passwordHash -passwordSalt");
+        }
+
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+
+        res.send(user);
+    } catch (error) {
+        res.status(404).send({ message: "Please enter correct token or user ID" });
+    }
+});
+
 module.exports = userRouter;

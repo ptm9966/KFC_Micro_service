@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 import { useToast } from '@chakra-ui/react'
-import { ORDERS_API_BASE_URL } from "../../config/api";
+import { API_BASE_URL, ORDERS_API_BASE_URL } from "../../config/api";
 
 const PaymentOption = () => {
     const toast = useToast()
@@ -26,18 +26,26 @@ const PaymentOption = () => {
         try {
             setIsPlacingOrder(true)
             const totalPrice = +localStorage.getItem("totalcart") || 0
+
+            const cartResponse = await fetch(`${API_BASE_URL}/api/cart`)
+            const cartItems = await cartResponse.json()
+
+            if (!cartResponse.ok || !Array.isArray(cartItems) || cartItems.length === 0) {
+                throw new Error("Cart is empty or unable to fetch cart items")
+            }
+
             const response = await fetch(`${ORDERS_API_BASE_URL}/api/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    userId: user?._id,
+                    items: cartItems,
+                    userId: user?.id || user?._id,
                     userName: user?.name,
                     userMobile: user?.mobile,
                     totalPrice,
                     paymentMethod: "Cash on Delivery",
-                    clearCart: true,
                 }),
             })
             const data = await response.json()
@@ -45,6 +53,10 @@ const PaymentOption = () => {
             if (!response.ok) {
                 throw new Error(data.message || data.err || "Unable to place order")
             }
+
+            await fetch(`${API_BASE_URL}/api/cart`, {
+                method: "DELETE",
+            })
 
             localStorage.setItem("lastOrder", JSON.stringify(data.order))
             localStorage.setItem("totalcart", 0)
