@@ -63,6 +63,8 @@ This application follows a microservices architecture:
 
 ### Running the Application
 
+For routing options between the frontend and microservices, see [ROUTING_GUIDE.md](ROUTING_GUIDE.md).
+
 #### Using Docker Compose (Recommended)
 
 ```bash

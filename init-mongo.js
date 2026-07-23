@@ -1,5 +1,5 @@
 // MongoDB initialization script to load products from product.json
-db = db.getSiblingDB('kfc-database');
+db = db.getSiblingDB('products-database');
 
 // Drop existing collection if it exists (optional, remove if you want to keep old data)
 db.products.drop();

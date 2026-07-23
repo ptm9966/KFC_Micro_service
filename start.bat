@@ -31,14 +31,14 @@ docker-compose --version
 echo.
 
 REM Verify .env file exists
-if not exist "Backend\.env" (
-    echo ⚠️  Backend\.env file not found
+if not exist "cartMicroservice\.env" (
+    echo ⚠️  cartMicroservice\.env file not found
     echo Creating .env file...
     (
         echo DB_URL=mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
         echo PORT=8080
         echo FRONTEND_URL=http://localhost:3000
-    ) > Backend\.env
+    ) > cartMicroservice\.env
 )
 
 echo.
@@ -64,7 +64,7 @@ echo ================================
 echo Access Points:
 echo ================================
 echo Frontend (React):     http://localhost:3000
-echo Backend API:          http://localhost:8080
+echo Cart API:             http://localhost:8080
 echo API Documentation:    http://localhost:8080/api-docs
 echo MongoDB:              localhost:27017
 echo.
@@ -77,7 +77,7 @@ echo ================================
 echo Useful Commands:
 echo ================================
 echo View logs:            docker-compose logs -f
-echo View backend logs:    docker-compose logs -f backend
+echo View cart logs:       docker-compose logs -f cart-service
 echo Stop services:        docker-compose down
 echo Stop ^& remove data:  docker-compose down -v
 echo.

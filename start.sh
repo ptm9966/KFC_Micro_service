@@ -27,12 +27,12 @@ echo "✅ Docker Compose is installed: $(docker-compose --version)"
 echo ""
 
 # Verify .env file exists
-if [ ! -f "Backend/.env" ]; then
-    echo "⚠️  Backend/.env file not found"
+if [ ! -f "cartMicroservice/.env" ]; then
+    echo "⚠️  cartMicroservice/.env file not found"
     echo "Creating .env file..."
-    cp Backend/.env.example Backend/.env 2>/dev/null || echo "DB_URL=mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
+    cp cartMicroservice/.env.example cartMicroservice/.env 2>/dev/null || echo "DB_URL=mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
 PORT=8080
-FRONTEND_URL=http://localhost:3000" > Backend/.env
+FRONTEND_URL=http://localhost:3000" > cartMicroservice/.env
 fi
 
 # Build images if needed
@@ -59,7 +59,7 @@ echo "================================"
 echo "Access Points:"
 echo "================================"
 echo "Frontend (React):     http://localhost:3000"
-echo "Backend API:          http://localhost:8080"
+echo "Cart API:             http://localhost:8080"
 echo "API Documentation:    http://localhost:8080/api-docs"
 echo "MongoDB:              localhost:27017"
 echo ""
@@ -72,7 +72,7 @@ echo "================================"
 echo "Useful Commands:"
 echo "================================"
 echo "View logs:            docker-compose logs -f"
-echo "View backend logs:    docker-compose logs -f backend"
+echo "View cart logs:       docker-compose logs -f cart-service"
 echo "Stop services:        docker-compose down"
 echo "Stop & remove data:   docker-compose down -v"
 echo ""
