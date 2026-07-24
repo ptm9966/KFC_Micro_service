@@ -23,13 +23,7 @@ jobs:
        run: |
            pwd
            ls -lah
-     - name: "Order-api-image-build"
-       working-directory: OrdersMicroservice
-       run: |
-          docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }} .
-          docker images
-          
+    
      - name: "OrdersMicroservice-api-image-build"
        working-directory: OrdersMicroservice
        run: |
@@ -40,26 +34,26 @@ jobs:
        working-directory: ProductMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ProductMicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }} .
           docker images
      - name: "UserMicroservice-api-image-build"
        working-directory: UserMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-UserMicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }} .
           docker images
      - name: "cartMicroservice-api-image-build"
        working-directory: cartMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-CartMicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} .
           docker images
 
      - name: "Frontend-image-build"
        working-directory: Frontend
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-FrontendMicorservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
           docker images
     
 
