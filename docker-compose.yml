@@ -13,15 +13,14 @@ services:
     volumes:
       - mongodb_data:/data/db
       - mongodb_config:/data/configdb
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - kfc-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 30s
 
   # MongoDB Database for orders microservice
   orders-mongodb:
@@ -40,18 +39,18 @@ services:
     networks:
       - kfc-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 30s
 
-  # Backend Node.js Application
-  backend:
+  # Cart Microservice
+  cart-service:
     build:
-      context: ./Backend
+      context: ./cartMicroservice
       dockerfile: Dockerfile
-    container_name: kfc-backend
+    container_name: kfc-cart-service
     restart: always
     ports:
       - "8080:8080"
@@ -66,10 +65,10 @@ services:
     networks:
       - kfc-network
     volumes:
-      - ./Backend:/app
+      - ./cartMicroservice:/app
       - /app/node_modules
     healthcheck:
-      test: curl -f http://localhost:8080/api/product || exit 1
+      test: curl -f http://localhost:8080/api/cart || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
@@ -120,11 +119,11 @@ services:
     networks:
       - kfc-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 30s
 
   # User/Auth Microservice
   users-service:
@@ -169,14 +168,15 @@ services:
     volumes:
       - products_mongodb_data:/data/db
       - products_mongodb_config:/data/configdb
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - kfc-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 30s
 
   # Product Microservice
   products-service:
@@ -223,7 +223,7 @@ services:
     environment:
       REACT_APP_ENV: production
     depends_on:
-      - backend
+      - cart-service
       - orders-service
       - users-service
       - products-service

@@ -28,6 +28,6 @@ app.use("/api", cartRouter);
 
 app.listen(PORT, async () => {
     await connect();
-    console.log(`Backend listening at http://localhost:${PORT}`);
+    console.log(`Cart microservice listening at http://localhost:${PORT}`);
 });
 
