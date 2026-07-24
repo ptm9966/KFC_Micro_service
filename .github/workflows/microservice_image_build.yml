@@ -27,7 +27,7 @@ jobs:
        working-directory: OrdersMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }} .
           docker image
           
        
