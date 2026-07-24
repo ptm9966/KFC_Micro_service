@@ -55,6 +55,14 @@ jobs:
           docker --version
           docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
           docker images
+
+      - name: "Push image to github"
+        run: |
+          docker push ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
     
 
 
