@@ -1,0 +1,35 @@
+name: order-api-pipeline
+permissions:
+  contents: read
+  id-token: write
+  actions: write
+  packages: write
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+   runs-on: ubuntu-slim
+   steps:
+     - name: "checku_out"
+       uses: actions/checkout@v6.0.2
+     - name: "github_registry_login"
+       uses: docker/login-action@v4
+       with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+     - name: "present working directory"
+       run: |
+           pwd
+           ls -lah
+     - name: "Order-api-image-build"
+       working-directory: OrdersMicroservice
+       run: |
+          docker --version
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
+          docker image
+          
+       
+       
+  
