@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-   runs-on: ubuntu-slim
+   runs-on: ubuntu-latest
    steps:
      - name: "checku_out"
        uses: actions/checkout@v6.0.2
@@ -23,12 +23,52 @@ jobs:
        run: |
            pwd
            ls -lah
-     - name: "Order-api-image-build"
+    
+     - name: "OrdersMicroservice-api-image-build"
        working-directory: OrdersMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
-          docker image
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }} .
+          docker images
+     - name: "ProductMicroservice-api-image-build"
+       working-directory: ProductMicroservice
+       run: |
+          docker --version
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }} .
+          docker images
+     - name: "UserMicroservice-api-image-build"
+       working-directory: UserMicroservice
+       run: |
+          docker --version
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }} .
+          docker images
+     - name: "cartMicroservice-api-image-build"
+       working-directory: cartMicroservice
+       run: |
+          docker --version
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} .
+          docker images
+
+     - name: "Frontend-image-build"
+       working-directory: Frontend
+       run: |
+          docker --version
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
+          docker images
+
+      - name: "Push image to github"
+        run: |
+          docker push ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
+    
+
+
+
+
+          
           
        
        
