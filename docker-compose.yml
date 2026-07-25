@@ -222,13 +222,28 @@ services:
       - "3000:80"
     environment:
       REACT_APP_ENV: production
+      # Nginx upstream service URLs
+      CART_SERVICE_URL: cart-service:8080
+      ORDERS_SERVICE_URL: orders-service:8081
+      USER_SERVICE_URL: users-service:8082
+      PRODUCTS_SERVICE_URL: products-service:8083
     depends_on:
-      - cart-service
-      - orders-service
-      - users-service
-      - products-service
+      cart-service:
+        condition: service_healthy
+      orders-service:
+        condition: service_healthy
+      users-service:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
     networks:
       - kfc-network
+    healthcheck:
+      test: curl -f http://localhost/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   cart_mongodb_data:

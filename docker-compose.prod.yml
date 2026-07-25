@@ -1,0 +1,157 @@
+# Docker Compose for Production Deployment
+# 
+# This file demonstrates how to configure the frontend and backend services
+# with external microservice URLs (e.g., deployed on different servers, cloud platforms)
+# 
+# Usage:
+#   docker-compose -f docker-compose.prod.yml up
+# 
+# Or with .env file:
+#   Create .env file with production URLs, then run:
+#   docker-compose -f docker-compose.prod.yml up
+
+services:
+  # Frontend React Application with Nginx Reverse Proxy
+  frontend:
+    image: kfc-frontend:latest  # Use pre-built image, no build step
+    container_name: kfc-frontend-prod
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      # React app configuration (baked into static build)
+      REACT_APP_ENV: production
+      
+      # Nginx reverse proxy configuration
+      # Point these to your production backend services
+      CART_SERVICE_URL: ${CART_SERVICE_URL:-http://cart-api.example.com:8080}
+      ORDERS_SERVICE_URL: ${ORDERS_SERVICE_URL:-http://orders-api.example.com:8081}
+      PRODUCTS_SERVICE_URL: ${PRODUCTS_SERVICE_URL:-http://products-api.example.com:8082}
+      USER_SERVICE_URL: ${USER_SERVICE_URL:-http://auth-api.example.com:8083}
+    
+    # Optional: Add health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Optional: Add logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Optional: Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # Optional: Add backend services if they're also in Docker
+  # Uncomment and configure these if you're running backends locally
+  
+  # cart-service:
+  #   image: kfc-cart-service:latest
+  #   container_name: cart-service-prod
+  #   restart: always
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     NODE_ENV: production
+  #     PORT: 8080
+  #     DB_URL: ${CART_DB_URL:-mongodb://admin:password@cart-mongodb:27017/carts-database?authSource=admin}
+  #   depends_on:
+  #     - cart-mongodb
+  #   networks:
+  #     - kfc-prod-network
+
+networks:
+  kfc-prod-network:
+    driver: bridge
+
+---
+
+# Example .env file for production
+# Save as .env and run: docker-compose -f docker-compose.prod.yml up
+
+# Frontend Configuration
+REACT_APP_ENV=production
+
+# Backend Microservice URLs (external services or cloud-hosted)
+# Replace these with your actual production service URLs
+
+# Cart Service - Example formats:
+# - Local network: http://cart-service:8080
+# - External server: http://cart-api.example.com:8080
+# - Cloud: https://cart-api.azurecontainerapps.io
+# - AWS: http://cart-api.us-east-1.elb.amazonaws.com:8080
+CART_SERVICE_URL=http://cart-api.production.example.com:8080
+
+# Orders Service
+ORDERS_SERVICE_URL=http://orders-api.production.example.com:8081
+
+# Products Service
+PRODUCTS_SERVICE_URL=http://products-api.production.example.com:8082
+
+# User/Auth Service
+USER_SERVICE_URL=http://auth-api.production.example.com:8083
+
+---
+
+# Alternative: Using separate .env files for different environments
+
+# .env.staging
+CART_SERVICE_URL=http://cart-api.staging.example.com:8080
+ORDERS_SERVICE_URL=http://orders-api.staging.example.com:8081
+PRODUCTS_SERVICE_URL=http://products-api.staging.example.com:8082
+USER_SERVICE_URL=http://auth-api.staging.example.com:8083
+
+# .env.production
+CART_SERVICE_URL=https://cart-api.production.example.com:8080
+ORDERS_SERVICE_URL=https://orders-api.production.example.com:8081
+PRODUCTS_SERVICE_URL=https://products-api.production.example.com:8082
+USER_SERVICE_URL=https://auth-api.production.example.com:8083
+
+# Usage:
+# docker-compose -f docker-compose.prod.yml --env-file .env.staging up
+# docker-compose -f docker-compose.prod.yml --env-file .env.production up
+
+---
+
+# Advanced: Running in different cloud platforms
+
+# AZURE CONTAINER INSTANCES
+# az container create \
+#   --resource-group myResourceGroup \
+#   --name kfc-frontend \
+#   --image kfc-frontend:latest \
+#   --environment-variables \
+#   CART_SERVICE_URL=http://cart-api.azurecontainerapps.io:8080 \
+#   ORDERS_SERVICE_URL=http://orders-api.azurecontainerapps.io:8081 \
+#   PRODUCTS_SERVICE_URL=http://products-api.azurecontainerapps.io:8082 \
+#   USER_SERVICE_URL=http://auth-api.azurecontainerapps.io:8083 \
+#   --ports 80
+
+# KUBERNETES
+# kubectl set env deployment/kfc-frontend \
+#   CART_SERVICE_URL=http://cart-service.default.svc.cluster.local:8080 \
+#   ORDERS_SERVICE_URL=http://orders-service.default.svc.cluster.local:8081 \
+#   PRODUCTS_SERVICE_URL=http://products-service.default.svc.cluster.local:8082 \
+#   USER_SERVICE_URL=http://users-service.default.svc.cluster.local:8083
+
+# DOCKER SWARM
+# docker service create \
+#   --name kfc-frontend \
+#   -e CART_SERVICE_URL=http://cart-api:8080 \
+#   -e ORDERS_SERVICE_URL=http://orders-api:8081 \
+#   -e PRODUCTS_SERVICE_URL=http://products-api:8082 \
+#   -e USER_SERVICE_URL=http://auth-api:8083 \
+#   -p 80:80 \
+#   kfc-frontend:latest

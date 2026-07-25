@@ -2,7 +2,69 @@
 
 A modern, responsive React application for the KFC food ordering system. Built with React 18, Redux, and Chakra UI.
 
-## 📋 Requirements
+## � Deployment with Environment Variables
+
+The frontend now supports **environment-based deployment** through configurable nginx proxies. This allows you to deploy the same Docker image to multiple environments without rebuilding.
+
+### Quick Start: Docker Deployment
+
+```bash
+# Build the image
+docker build -t kfc-frontend:latest .
+
+# Run with default Docker network settings
+docker run -p 3000:80 kfc-frontend:latest
+
+# Run with custom microservice URLs
+docker run \
+  -e CART_SERVICE_URL=http://cart-api.example.com:8080 \
+  -e ORDERS_SERVICE_URL=http://orders-api.example.com:8081 \
+  -e PRODUCTS_SERVICE_URL=http://products-api.example.com:8082 \
+  -e USER_SERVICE_URL=http://auth-api.example.com:8083 \
+  -p 3000:80 \
+  kfc-frontend:latest
+```
+
+### Docker Compose Deployment
+
+```bash
+# Use default Docker network (local development)
+docker-compose up
+
+# Use production environment variables (external services)
+export CART_SERVICE_URL=http://cart-api.prod.example.com:8080
+export ORDERS_SERVICE_URL=http://orders-api.prod.example.com:8081
+export PRODUCTS_SERVICE_URL=http://products-api.prod.example.com:8082
+export USER_SERVICE_URL=http://auth-api.prod.example.com:8083
+docker-compose up
+```
+
+### Environment Variables for Nginx Proxy
+
+| Variable | Purpose | Default | Example |
+|----------|---------|---------|---------|
+| `CART_SERVICE_URL` | Cart microservice backend URL | `cart-service:8080` | `http://cart-api.example.com:8080` |
+| `ORDERS_SERVICE_URL` | Orders microservice backend URL | `orders-service:8081` | `http://orders-api.example.com:8081` |
+| `PRODUCTS_SERVICE_URL` | Products microservice backend URL | `products-service:8082` | `http://products-api.example.com:8082` |
+| `USER_SERVICE_URL` | User/Auth microservice backend URL | `users-service:8083` | `http://auth-api.example.com:8083` |
+
+### API Routes Through Nginx
+
+Once deployed, the frontend exposes these proxy routes:
+
+- **Cart API**: `http://localhost/api/cart` → `CART_SERVICE_URL`
+- **Orders API**: `http://localhost/api/orders` → `ORDERS_SERVICE_URL`
+- **Products API**: `http://localhost/api/products` → `PRODUCTS_SERVICE_URL`
+- **User/Auth API**: `http://localhost/api/users` → `USER_SERVICE_URL`
+- **Auth Endpoint**: `http://localhost/auth` → `USER_SERVICE_URL`
+
+### Complete Deployment Guide
+
+For detailed deployment instructions, scenarios, and troubleshooting, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
+
+---
+
+## �📋 Requirements
 
 - **Node.js**: 20.x LTS (or higher)
 - **npm**: 10.x (or higher)

@@ -31,11 +31,24 @@ RUN npm run build
 # Production stage - using Nginx
 FROM nginx:1.27-alpine
 
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install gettext-base for envsubst
+RUN apk add --no-cache gettext
+
+# Set default environment variables for backend microservices
+ENV CART_SERVICE_URL=cart-service:8080
+ENV ORDERS_SERVICE_URL=orders-service:8081
+ENV PRODUCTS_SERVICE_URL=products-service:8082
+ENV USER_SERVICE_URL=user-service:8083
+
+# Copy Nginx configuration template (will be processed with envsubst)
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
 # Copy built app from builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copy entrypoint script
+RUN echo '#!/bin/sh\nset -e\necho "Substituting environment variables in nginx config..."\nenvsubst '\''$CART_SERVICE_URL,$ORDERS_SERVICE_URL,$PRODUCTS_SERVICE_URL,$USER_SERVICE_URL'\'' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf\necho "Starting Nginx..."\nnginx -g "daemon off;"\n' > /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
@@ -43,5 +56,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 EXPOSE 80
 
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
