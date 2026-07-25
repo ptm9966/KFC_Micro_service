@@ -206,16 +206,17 @@ services:
       retries: 3
       start_period: 40s
 
-  # Frontend React Application
+  # Frontend React Application - Static files only
+  # App Gateway handles all API routing
   frontend:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
       args:
-        REACT_APP_CART_SERVICE_URL: http://localhost:8080
-        REACT_APP_ORDERS_URL: http://localhost:8081
-        REACT_APP_USERS_URL: http://localhost:8082
-        REACT_APP_PRODUCTS_URL: http://localhost:8083
+        REACT_APP_CART_SERVICE_URL: http://localhost:8080/api/cart
+        REACT_APP_ORDERS_URL: http://localhost:8080/api/orders
+        REACT_APP_USERS_URL: http://localhost:8080/api/users
+        REACT_APP_PRODUCTS_URL: http://localhost:8080/api/products
     container_name: kfc-frontend
     restart: always
     ports:
@@ -229,6 +230,12 @@ services:
       - products-service
     networks:
       - kfc-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   cart_mongodb_data:

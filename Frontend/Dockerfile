@@ -12,10 +12,11 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Build-time args for React envs (these are baked into the static build)
-ARG REACT_APP_CART_SERVICE_URL=http://localhost:8080
-ARG REACT_APP_ORDERS_URL=http://localhost:8081
-ARG REACT_APP_USERS_URL=http://localhost:8082
-ARG REACT_APP_PRODUCTS_URL=http://localhost:8083
+# Point to App Gateway or your API endpoint
+ARG REACT_APP_CART_SERVICE_URL=https://yourdomain.com/api/cart
+ARG REACT_APP_ORDERS_URL=https://yourdomain.com/api/orders
+ARG REACT_APP_USERS_URL=https://yourdomain.com/api/users
+ARG REACT_APP_PRODUCTS_URL=https://yourdomain.com/api/products
 ARG REACT_APP_ENV=production
 
 # Export them as ENV so the React build picks them up

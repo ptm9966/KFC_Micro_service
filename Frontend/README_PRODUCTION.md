@@ -2,7 +2,48 @@
 
 A modern, responsive React application for the KFC food ordering system. Built with React 18, Redux, and Chakra UI.
 
-## 📋 Requirements
+## � Production Deployment with Azure App Gateway
+
+This frontend is designed to work with **Azure Application Gateway** for path-based routing to microservices.
+
+### Architecture
+
+```
+Client → App Gateway (yourdomain.com)
+    ├─ / → Frontend (React Static)
+    ├─ /api/cart/* → Cart Service
+    ├─ /api/orders/* → Orders Service
+    ├─ /api/products/* → Products Service
+    └─ /api/users/* → User Service
+```
+
+### Quick Start: Production Build
+
+```bash
+# Build React app for production
+REACT_APP_CART_SERVICE_URL=https://yourdomain.com/api/cart \
+REACT_APP_ORDERS_URL=https://yourdomain.com/api/orders \
+REACT_APP_PRODUCTS_URL=https://yourdomain.com/api/products \
+REACT_APP_USERS_URL=https://yourdomain.com/api/users \
+npm run build
+
+# Build Docker image
+docker build -t kfc-frontend:latest .
+
+# Deploy to Azure
+az container create \
+  --image kfc-frontend:latest \
+  --name kfc-frontend \
+  --resource-group myResourceGroup
+```
+
+### App Gateway Configuration
+
+See **[APP_GATEWAY_SETUP.md](../APP_GATEWAY_SETUP.md)** for complete Azure Application Gateway setup instructions.
+
+---
+
+## �📋 Requirements
 
 - **Node.js**: 20.x LTS (or higher)
 - **npm**: 10.x (or higher)
