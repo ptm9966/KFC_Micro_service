@@ -3,9 +3,58 @@
 ## Overview
 
 This Docker Compose configuration runs the complete KFC application stack with:
-- **MongoDB** - Database (v7.0 Alpine)
-- **Backend** - Node.js Express API (Port 8080)
-- **Frontend** - React Application (Port 3000)
+- **MongoDB containers** for Cart, Orders, Users, and Products
+- **Backend microservices** for Cart, Orders, Users, and Products
+- **Frontend React app** served by Nginx
+- **A shared Docker network** so containers can communicate by service name
+
+## How service communication works
+
+### Docker Compose network
+
+All services are attached to the same Docker network:
+```yaml
+networks:
+  kfc-network:
+    driver: bridge
+```
+
+This allows containers to resolve each other by service name inside Docker.
+
+### Backend services -> MongoDB
+
+Each service connects to its own MongoDB container using the service hostname in `DB_URL`:
+- `cart-service` -> `mongodb`
+- `orders-service` -> `orders-mongodb`
+- `users-service` -> `users-mongodb`
+- `products-service` -> `products-mongodb`
+
+Example for cart service:
+```yaml
+DB_URL: mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
+```
+
+Because `cart-service` and `mongodb` are on the same Docker network, the hostname `mongodb` resolves to the MongoDB container.
+
+### Frontend -> Backend
+
+The frontend is a static React app served by the `frontend` container on port `80`, exposed to the host on port `3000`.
+
+Frontend API URLs are provided at build time using environment variables:
+- `REACT_APP_BACKEND_URL` = `http://localhost:8080`
+- `REACT_APP_ORDERS_URL` = `http://localhost:8081`
+- `REACT_APP_USERS_URL` = `http://localhost:8082`
+- `REACT_APP_PRODUCTS_URL` = `http://localhost:8083`
+
+Because the React app runs in the browser, `localhost` refers to the host machine. Docker Compose publishes the backend ports to the host so the browser can reach them.
+
+### Request flow
+
+1. User opens `http://localhost:3000`
+2. Browser downloads the React app from the `frontend` container
+3. React code calls backend APIs on `http://localhost:8080`, `8081`, `8082`, and `8083`
+4. Docker forwards those host ports to the correct backend containers
+5. Each backend service uses its internal MongoDB hostname to access its database
 
 ## Prerequisites
 
@@ -77,45 +126,98 @@ docker-compose down -v
 
 ## Service Configuration
 
-### MongoDB Service
+### MongoDB Services
 
+Each microservice uses its own MongoDB instance:
+- `mongodb` for cart-service
+- `orders-mongodb` for orders-service
+- `users-mongodb` for users-service
+- `products-mongodb` for products-service
+
+Example connection string for cart-service:
 ```yaml
-mongodb:
-  image: mongo:7.0-alpine
-  ports: 27017:27017
-  username: admin
-  password: admin123456
-  database: kfc-database
+DB_URL: mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
 ```
 
-**Connection String (inside Docker):**
-```
-mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
-```
+Use Docker service hostnames from inside Docker containers, and use `localhost` from the host machine or browser.
 
-**Connection String (from Host):**
-```
-mongodb://admin:admin123456@localhost:27017/kfc-database?authSource=admin
-```
+- Inside a container: `mongodb`, `cart-service`, `orders-service`, `users-service`, `products-service` are valid hostnames.
+- From the browser: service names are not resolvable, so you must use host ports like `http://localhost:8080`.
 
-### Backend Service
+### Backend microservices
 
+#### Cart microservice
 ```yaml
-backend:
-  port: 8080
+cart-service:
+  ports:
+    - "8080:8080"
   environment:
+    PORT: 8080
     DB_URL: mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
     FRONTEND_URL: http://localhost:3000
 ```
 
-### Frontend Service
+#### Orders microservice
+```yaml
+orders-service:
+  ports:
+    - "8081:8081"
+  environment:
+    PORT: 8081
+    DB_URL: mongodb://admin:admin123456@orders-mongodb:27017/orders-database?authSource=admin
+```
+
+#### Users microservice
+```yaml
+users-service:
+  ports:
+    - "8082:8082"
+  environment:
+    PORT: 8082
+    DB_URL: mongodb://admin:admin123456@users-mongodb:27017/users-database?authSource=admin
+    JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+```
+
+#### Products microservice
+```yaml
+products-service:
+  ports:
+    - "8083:8083"
+  environment:
+    PORT: 8083
+    DB_URL: mongodb://admin:admin123456@products-mongodb:27017/products-database?authSource=admin
+```
+
+### Frontend service
+
+The frontend container exposes port `80` inside Docker and maps it to host port `3000`.
 
 ```yaml
 frontend:
-  port: 3000
-  environment:
-    REACT_APP_BACKEND_URL: http://localhost:8080
+  ports:
+    - "3000:80"
+  build:
+    args:
+      REACT_APP_BACKEND_URL: http://localhost:8080
+      REACT_APP_ORDERS_URL: http://localhost:8081
+      REACT_APP_USERS_URL: http://localhost:8082
+      REACT_APP_PRODUCTS_URL: http://localhost:8083
 ```
+
+The React app uses these values to call the backend APIs from the browser.
+
+> Note: In this project, the frontend is built to call backend APIs using absolute host URLs (`http://localhost:8080`, etc.). That means those API requests go directly from the browser to the backend host ports, so the Nginx proxy in the `frontend` container is not used for those requests.
+>
+> Nginx still serves the static React files, but it only proxies API requests if the app uses relative paths like `/api` or `/auth` instead of absolute host URLs.
+>
+> If you want to use Docker service names, change the frontend to call relative URLs and let Nginx proxy them inside Docker. For example:
+>
+> - React client uses `/api/cart` instead of `http://localhost:8080/api/cart`
+> - Nginx proxies `/api` to `http://cart-service:8080`
+>
+> Then the browser only talks to `http://localhost:3000`, and Nginx forwards the request to the internal service name `cart-service`.
+>
+> This is the only way the browser can indirectly use Docker service names: the request is routed through `frontend` Nginx, not by the browser directly resolving `cart-service`.
 
 ## Common Commands
 

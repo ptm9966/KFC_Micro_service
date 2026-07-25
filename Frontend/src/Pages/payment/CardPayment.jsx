@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { authsaveData } from "../../utils/AuthLocaldata";
 import logoeatmore1 from "../../logoeatmore1.jpg"
-import { API_BASE_URL, ORDERS_API_BASE_URL } from "../../config/api";
+import { CART_API_BASE_URL, ORDERS_API_BASE_URL } from "../../config/api";
 
 const CardPayment = () => {
      const [cartPayments, setCartPayments] = useState();
@@ -25,8 +25,8 @@ const CardPayment = () => {
           try {
                setIsPlacingOrder(true);
 
-               // Fetch cart items from main backend
-               const cartResponse = await fetch(`${API_BASE_URL}/api/cart`);
+               // Fetch cart items from the cart service
+               const cartResponse = await fetch(`${CART_API_BASE_URL}/api/cart`);
                const cartItems = await cartResponse.json();
 
                if (!cartResponse.ok || !Array.isArray(cartItems) || cartItems.length === 0) {
@@ -54,8 +54,8 @@ const CardPayment = () => {
                     throw new Error(data.message || data.err || "Unable to place order");
                }
 
-               // Clear cart in main backend
-               await fetch(`${API_BASE_URL}/api/cart`, {
+               // Clear cart in the cart service
+               await fetch(`${CART_API_BASE_URL}/api/cart`, {
                     method: "DELETE",
                });
 

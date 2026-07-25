@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai'
 import { useDispatch } from 'react-redux';
 import { setFinalCartItems, setFinalCartPrice } from '../../Redux/Cart/action';
-import { API_BASE_URL } from '../../config/api';
+import { CART_API_BASE_URL } from '../../config/api';
 
 const SingleMenu = ({e,id}) => {
 
@@ -29,7 +29,7 @@ const SingleMenu = ({e,id}) => {
         setBtnsDisplay("flex")
         e.qty = 1 
         try {
-            let res = await fetch(`${API_BASE_URL}/api/cart`, {
+            let res = await fetch(`${CART_API_BASE_URL}/api/cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const SingleMenu = ({e,id}) => {
     }
 
     // const fetchCartData = () => {
-    //     fetch(`${API_BASE_URL}/api/cart`).then((res) => {
+    //     fetch(`${CART_API_BASE_URL}/api/cart`).then((res) => {
     //       return res.json()
     //     }).then((res) => {
     //     }).catch((err) => {
@@ -67,7 +67,7 @@ const SingleMenu = ({e,id}) => {
     //     })
     //   }
     const fetchCartData = () => {
-        fetch(`${API_BASE_URL}/api/cart`).then((res) => {
+        fetch(`${CART_API_BASE_URL}/api/cart`).then((res) => {
           return res.json()
         }).then((res) => {
           setCartData(res)
@@ -104,7 +104,7 @@ const SingleMenu = ({e,id}) => {
         let id = e._id;
         e.qty = e.qty-qty
         try {
-            let res = await fetch(`${API_BASE_URL}/api/cart/:${id}`, {
+            let res = await fetch(`${CART_API_BASE_URL}/api/cart/:${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -124,7 +124,7 @@ const SingleMenu = ({e,id}) => {
         setQty((prev) => prev + 1)
         e.qty = e.qty+qty
         try {
-            let res = await fetch(`${API_BASE_URL}/api/cart/:${id}`, {
+            let res = await fetch(`${CART_API_BASE_URL}/api/cart/:${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

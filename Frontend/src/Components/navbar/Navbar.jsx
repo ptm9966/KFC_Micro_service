@@ -9,7 +9,7 @@ import Sidebar from "./sidebar";
 import authlogout from "../../Redux/Auth/auth.action";
 import Logo from "../../logoeatmore1.jpg" 
 import { setFinalCartItems, setFinalCartPrice } from "../../Redux/Cart/action";
-import { API_BASE_URL } from "../../config/api";
+import { CART_API_BASE_URL } from "../../config/api";
 
 const GetData = async (values) => {
   let res = await axios.post(
@@ -81,7 +81,7 @@ const Navbar = () => {
   console.log(ID);
 
   const fetchCartData = () => {
-    fetch(`${API_BASE_URL}/api/cart`).then((res) => {
+    fetch(`${CART_API_BASE_URL}/api/cart`).then((res) => {
       return res.json()
     }).then((res) => {
       setCartData(res)

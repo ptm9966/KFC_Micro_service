@@ -84,6 +84,10 @@ This will start all services:
 3. Start Orders Microservice: `cd OrdersMicroservice && npm install && npm start`
 4. Start Frontend: `cd Frontend && npm install && npm start`
 
+### Azure Container Apps Deployment
+
+For Azure Container Apps deployment steps, environment variables, and service configuration, see [AZURE_CONTAINER_APPS.md](AZURE_CONTAINER_APPS.md).
+
 ### Credits
 ___
 * Images: [kfc.com](https://www.kfc.com/)

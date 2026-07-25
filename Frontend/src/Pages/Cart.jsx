@@ -4,7 +4,7 @@ import { AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai'
 import { useDispatch } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { setFinalCartItems, setFinalCartPrice } from '../Redux/Cart/action'
-import { API_BASE_URL } from '../config/api'
+import { CART_API_BASE_URL } from '../config/api'
 
 const Cart = () => {
 
@@ -27,7 +27,7 @@ const Cart = () => {
   const navigate = useNavigate()
 
   const fetchCartData = () => {
-    fetch(`${API_BASE_URL}/api/cart`).then((res) => {
+    fetch(`${CART_API_BASE_URL}/api/cart`).then((res) => {
       return res.json()
     }).then((res) => {
       setCartData(res)
@@ -44,7 +44,7 @@ const Cart = () => {
     let id = e._id;
     e.qty = e.qty - qty
     try {
-      let res = await fetch(`${API_BASE_URL}/api/cart/:${id}`, {
+      let res = await fetch(`${CART_API_BASE_URL}/api/cart/:${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const Cart = () => {
     let id = e._id;
     e.qty = e.qty + qty
     try {
-      let res = await fetch(`${API_BASE_URL}/api/cart/:${id}`, {
+      let res = await fetch(`${CART_API_BASE_URL}/api/cart/:${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const Cart = () => {
     console.log(e)
     let id = e._id
     try {
-      let res = await fetch(`${API_BASE_URL}/api/cart/:${id}`, {
+      let res = await fetch(`${CART_API_BASE_URL}/api/cart/:${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 services:
   # MongoDB Database for main application
-  mongodb:
+  carts-mongodb:
     image: mongo:7.0
     container_name: kfc-mongodb
     restart: always
@@ -9,10 +9,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin123456
-      MONGO_INITDB_DATABASE: kfc-database
+      MONGO_INITDB_DATABASE: carts-database
     volumes:
-      - mongodb_data:/data/db
-      - mongodb_config:/data/configdb
+      - cart_mongodb_data:/data/db
+      - cart_mongodb_config:/data/configdb
     networks:
       - kfc-network
     healthcheck:
@@ -57,10 +57,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: mongodb://admin:admin123456@mongodb:27017/kfc-database?authSource=admin
+      DB_URL: mongodb://admin:admin123456@carts-mongodb:27017/carts-database?authSource=admin
       FRONTEND_URL: http://localhost:3000
     depends_on:
-      mongodb:
+      carts-mongodb:
         condition: service_healthy
     networks:
       - kfc-network
@@ -212,7 +212,7 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
       args:
-        REACT_APP_BACKEND_URL: http://localhost:8080
+        REACT_APP_CART_SERVICE_URL: http://localhost:8080
         REACT_APP_ORDERS_URL: http://localhost:8081
         REACT_APP_USERS_URL: http://localhost:8082
         REACT_APP_PRODUCTS_URL: http://localhost:8083
@@ -231,9 +231,9 @@ services:
       - kfc-network
 
 volumes:
-  mongodb_data:
+  cart_mongodb_data:
     driver: local
-  mongodb_config:
+  cart_mongodb_config:
     driver: local
   orders_mongodb_data:
     driver: local

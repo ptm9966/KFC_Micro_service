@@ -11,10 +11,21 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build the application
-ARG REACT_APP_BACKEND_URL=http://localhost:8080
-ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+# Build-time args for React envs (these are baked into the static build)
+ARG REACT_APP_CART_SERVICE_URL=http://localhost:8080
+ARG REACT_APP_ORDERS_URL=http://localhost:8081
+ARG REACT_APP_USERS_URL=http://localhost:8082
+ARG REACT_APP_PRODUCTS_URL=http://localhost:8083
+ARG REACT_APP_ENV=production
 
+# Export them as ENV so the React build picks them up
+ENV REACT_APP_CART_SERVICE_URL=$REACT_APP_CART_SERVICE_URL
+ENV REACT_APP_ORDERS_URL=$REACT_APP_ORDERS_URL
+ENV REACT_APP_USERS_URL=$REACT_APP_USERS_URL
+ENV REACT_APP_PRODUCTS_URL=$REACT_APP_PRODUCTS_URL
+ENV REACT_APP_ENV=$REACT_APP_ENV
+
+# Build the application
 RUN npm run build
 
 # Production stage - using Nginx
