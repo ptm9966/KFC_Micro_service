@@ -55,9 +55,9 @@ jobs:
        run: |
           docker build \
           --build-arg REACT_APP_CART_SERVICE_URL="" \
-          --build-arg REACT_APP_ORDERS_URL=https:"" \
-          --build-arg REACT_APP_USERS_URL=https://<users-app-url> \
-          --build-arg REACT_APP_PRODUCTS_URL=https://<products-app-url> \
+          --build-arg REACT_APP_ORDERS_URL="" \
+          --build-arg REACT_APP_USERS_URL="" \
+          --build-arg REACT_APP_PRODUCTS_URL="" \
           -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
 
      - name: "Push image to github"
