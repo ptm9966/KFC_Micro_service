@@ -51,13 +51,17 @@ jobs:
 
      - name: "Frontend-image-build"
        working-directory: Frontend
+       shell: bash
        run: |
-          docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
-          docker images
+          docker build \
+          --build-arg REACT_APP_CART_SERVICE_URL="" \
+          --build-arg REACT_APP_ORDERS_URL=https:"" \
+          --build-arg REACT_APP_USERS_URL=https://<users-app-url> \
+          --build-arg REACT_APP_PRODUCTS_URL=https://<products-app-url> \
+          -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
 
-      - name: "Push image to github"
-        run: |
+     - name: "Push image to github"
+       run: |
           docker push ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }}
           docker push ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }}
           docker push ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }}
