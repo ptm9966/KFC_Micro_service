@@ -213,21 +213,22 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
       args:
-        REACT_APP_CART_SERVICE_URL: http://localhost:8080/api/cart
-        REACT_APP_ORDERS_URL: http://localhost:8080/api/orders
-        REACT_APP_USERS_URL: http://localhost:8080/api/users
-        REACT_APP_PRODUCTS_URL: http://localhost:8080/api/products
+        REACT_APP_CART_SERVICE_URL: ""
+        REACT_APP_ORDERS_URL: ""
+        REACT_APP_USERS_URL: ""
+        REACT_APP_PRODUCTS_URL: ""
     container_name: kfc-frontend
     restart: always
     ports:
       - "3000:80"
     environment:
       REACT_APP_ENV: production
-    depends_on:
-      - cart-service
-      - orders-service
-      - users-service
-      - products-service
+    
+    #depends_on:
+    #  - cart-service
+    #  - orders-service
+    # - users-service
+    #  - products-service
     networks:
       - kfc-network
     healthcheck:
