@@ -227,15 +227,15 @@ services:
       ORDERS_SERVICE_URL: orders-service:8081
       USER_SERVICE_URL: users-service:8082
       PRODUCTS_SERVICE_URL: products-service:8083
-    depends_on:
-      cart-service:
-        condition: service_healthy
-      orders-service:
-        condition: service_healthy
-      users-service:
-        condition: service_healthy
-      products-service:
-        condition: service_healthy
+    #depends_on:
+    #  cart-service:
+    #    condition: service_healthy
+    #  orders-service:
+    #    condition: service_healthy
+    #  users-service:
+    #    condition: service_healthy
+    #  products-service:
+    #    condition: service_healthy
     networks:
       - kfc-network
     healthcheck:

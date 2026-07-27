@@ -47,8 +47,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Copy entrypoint script
-RUN echo '#!/bin/sh\nset -e\necho "Substituting environment variables in nginx config..."\nenvsubst '\''$CART_SERVICE_URL,$ORDERS_SERVICE_URL,$PRODUCTS_SERVICE_URL,$USER_SERVICE_URL'\'' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf\necho "Starting Nginx..."\nnginx -g "daemon off;"\n' > /docker-entrypoint.sh && \
-    chmod +x /docker-entrypoint.sh
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
