@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kfc-config
+  namespace: kfc-dev
+data:
+  NODE_ENV: "production"
+  # ALLOWED_ORIGINS: Empty/not set = Allow all origins (Development)
+  # For production, set to comma-separated list:
+  # ALLOWED_ORIGINS: "http://20.223.23.189, http://kfc.local, https://yourdomain.com"
+  ALLOWED_ORIGINS: ""
+  DB_URL: "mongodb://admin:admin123456@kfc-mongodb:27017/products-database?authSource=admin"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kfc-products
+  namespace: kfc-dev
+  labels:
+    app: kfc-products
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kfc-products
+  template:
+    metadata:
+      labels:
+        app: kfc-products
+    spec:
+      containers:
+      - name: products
+        image: ghcr.io/ptm9966/kfc-productmicroservice:4986f730344ef4c7548298150f391bb37733b6cf
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8081"
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: kfc-config
+              key: DB_URL
+        readinessProbe:
+          httpGet:
+            path: /api-docs
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api-docs
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-service
+  namespace: kfc-dev
+  labels:
+    app: kfc-products
+spec:
+  selector:
+    app: kfc-products
+  ports:
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP
+  type: ClusterIP
