@@ -58,7 +58,7 @@ jobs:
           --build-arg REACT_APP_ORDERS_URL="https://kfc-orders-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
           --build-arg REACT_APP_USERS_URL="https://kfc-orders-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
           --build-arg REACT_APP_PRODUCTS_URL="https://kfc-products-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
-          -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
+          -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-frontendmicorservice:latest .
 
      - name: "Push image to github"
        run: |
