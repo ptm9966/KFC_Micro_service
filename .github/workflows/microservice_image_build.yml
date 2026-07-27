@@ -54,10 +54,10 @@ jobs:
        shell: bash
        run: |
           docker build \
-          --build-arg REACT_APP_CART_SERVICE_URL="" \
-          --build-arg REACT_APP_ORDERS_URL="" \
-          --build-arg REACT_APP_USERS_URL="" \
-          --build-arg REACT_APP_PRODUCTS_URL="" \
+          --build-arg REACT_APP_CART_SERVICE_URL="https://kfc-cart-microservice-api.internal.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
+          --build-arg REACT_APP_ORDERS_URL="https://kfc-orders-microservice-api.internal.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
+          --build-arg REACT_APP_USERS_URL="https://kfc-orders-microservice-api.internal.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
+          --build-arg REACT_APP_PRODUCTS_URL="https://kfc-products-microservice-api.internal.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
           -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} .
 
      - name: "Push image to github"
