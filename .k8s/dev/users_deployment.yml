@@ -33,10 +33,10 @@ spec:
       - name: users
         image: ghcr.io/ptm9966/kfc-usermicroservice:4986f730344ef4c7548298150f391bb37733b6cf
         ports:
-        - containerPort: 8082
+        - containerPort: 8080
         env:
         - name: PORT
-          value: "8082"
+          value: "8080"
         - name: DB_URL
           valueFrom:
             configMapKeyRef:
@@ -45,13 +45,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /api-docs
-            port: 8082
+            port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /api-docs
-            port: 8082
+            port: 8080
           initialDelaySeconds: 60
           periodSeconds: 30
         resources:
@@ -73,7 +73,7 @@ spec:
   selector:
     app: kfc-users
   ports:
-  - port: 8082
-    targetPort: 8082
+  - port: 8081
+    targetPort: 8080
     protocol: TCP
   type: ClusterIP

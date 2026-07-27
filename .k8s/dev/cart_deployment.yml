@@ -73,7 +73,7 @@ spec:
   selector:
     app: kfc-cart
   ports:
-  - port: 8082
+  - port: 8084
     targetPort: 8080
     protocol: TCP
   type: ClusterIP
