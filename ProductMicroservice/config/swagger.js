@@ -19,7 +19,10 @@ const options = {
       },
     ],
   },
-  apis: [path.join(__dirname, '../features/**/*.route.js')], // Path to the API routes
+  apis: [
+    path.join(__dirname, '../features/**/*.route.js'), // Path to the API routes
+    path.join(__dirname, '../index.js'), // Include root index for root-level endpoints
+  ],
 };
 
 const specs = swaggerJsdoc(options);

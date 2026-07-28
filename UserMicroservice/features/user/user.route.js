@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const Users = require("./user.model");
 
 const userRouter = express.Router();
@@ -311,3 +312,27 @@ userRouter.post("/singleuser", async (req, res) => {
 });
 
 module.exports = userRouter;
+
+/**
+ * @swagger
+ * /auth/healthz:
+ *   get:
+ *     summary: Health check for User microservice
+ *     description: Returns service and database connection status
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
+userRouter.get('/healthz', (req, res) => {
+    const dbState = mongoose.connection && mongoose.connection.readyState;
+    const dbStatus = dbState === 1 ? 'connected' : (dbState === 0 ? 'disconnected' : 'connecting/unknown');
+
+    res.status(200).json({
+        status: 'ok',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        db: dbStatus
+    });
+});

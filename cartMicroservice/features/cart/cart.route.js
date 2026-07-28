@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const mongoose = require("mongoose");
 const Cart = require("./cart.model");
 const cartRouter = Router();
 
@@ -181,3 +182,27 @@ cartRouter.delete("/cart", async (req, res) => {
 });
 
 module.exports = cartRouter;
+
+/**
+ * @swagger
+ * /api/cart/healthz:
+ *   get:
+ *     summary: Health check for Cart microservice
+ *     description: Returns service and database connection status
+ *     tags:
+ *       - Cart
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
+cartRouter.get('/cart/healthz', (req, res) => {
+    const dbState = mongoose.connection && mongoose.connection.readyState;
+    const dbStatus = dbState === 1 ? 'connected' : (dbState === 0 ? 'disconnected' : 'connecting/unknown');
+
+    res.status(200).json({
+        status: 'ok',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        db: dbStatus
+    });
+});

@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const mongoose = require("mongoose");
 const Order = require("./order.model");
 
 const orderRouter = Router();
@@ -34,6 +35,29 @@ orderRouter.get("/orders", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/orders/healthz:
+ *   get:
+ *     summary: Health check for Orders microservice
+ *     description: Returns service and database connection status
+ *     tags:
+ *       - Orders
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
+orderRouter.get('/orders/healthz', (req, res) => {
+  const dbState = mongoose.connection && mongoose.connection.readyState;
+  const dbStatus = dbState === 1 ? 'connected' : (dbState === 0 ? 'disconnected' : 'connecting/unknown');
+
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    db: dbStatus
+  });
+});
 /**
  * @swagger
  * /api/orders/{orderId}:

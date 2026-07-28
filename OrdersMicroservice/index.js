@@ -25,6 +25,24 @@ app.get("/", (req, res) => {
 
 app.use("/api", orderRouter);
 
+/**
+ * @swagger
+ * /healthz:
+ *   get:
+ *     summary: Root health check for Orders Microservice
+ *     description: Returns overall service status (used for liveness/readiness probes)
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
+app.get('/healthz', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.listen(PORT, async () => {
     await connect();
     console.log(`Orders Microservice listening at http://localhost:${PORT}`);

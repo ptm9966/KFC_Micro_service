@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Product = require("./product.model");
 
 const productRouter = express.Router();
@@ -37,6 +38,30 @@ productRouter.get("/product", async (req, res) => {
         console.log(error);
         res.status(500).send({ "error": "Something went wrong while fetching products" });
     }
+});
+
+/**
+ * @swagger
+ * /api/product/healthz:
+ *   get:
+ *     summary: Health check for Product microservice
+ *     description: Returns service and database connection status
+ *     tags:
+ *       - Products
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
+productRouter.get('/product/healthz', (req, res) => {
+    const dbState = mongoose.connection && mongoose.connection.readyState;
+    const dbStatus = dbState === 1 ? 'connected' : (dbState === 0 ? 'disconnected' : 'connecting/unknown');
+
+    res.status(200).json({
+        status: 'ok',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        db: dbStatus
+    });
 });
 
 /**
