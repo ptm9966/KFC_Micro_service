@@ -46,7 +46,7 @@ jobs:
        working-directory: cartMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-cartmicroservice:latest .
           docker images
 
      - name: "Frontend-image-build"
