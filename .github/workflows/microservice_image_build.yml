@@ -28,25 +28,25 @@ jobs:
        working-directory: OrdersMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-ordersmicroservice:latest .
           docker images
      - name: "ProductMicroservice-api-image-build"
        working-directory: ProductMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-productmicroservice:latest .
           docker images
      - name: "UserMicroservice-api-image-build"
        working-directory: UserMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-usermicroservice:latest .
           docker images
      - name: "cartMicroservice-api-image-build"
        working-directory: cartMicroservice
        run: |
           docker --version
-          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} .
+          docker build -f Dockerfile -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }} .
           docker images
 
      - name: "Frontend-image-build"
@@ -54,10 +54,10 @@ jobs:
        shell: bash
        run: |
           docker build \
-          --build-arg REACT_APP_CART_SERVICE_URL="https://kfc-cart-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
-          --build-arg REACT_APP_ORDERS_URL="https://kfc-orders-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
-          --build-arg REACT_APP_USERS_URL="https://kfc-orders-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
-          --build-arg REACT_APP_PRODUCTS_URL="https://kfc-products-microservice-api.ambitiousfield-d9139093.southeastasia.azurecontainerapps.io" \
+          --build-arg REACT_APP_CART_SERVICE_URL="" \
+          --build-arg REACT_APP_ORDERS_URL="" \
+          --build-arg REACT_APP_USERS_URL="" \
+          --build-arg REACT_APP_PRODUCTS_URL="" \
           -f Dockerfile -t ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }} -t ghcr.io/ptm9966/kfc-frontendmicorservice:latest .
 
      - name: "Push image to github"
@@ -65,10 +65,13 @@ jobs:
           docker push ghcr.io/ptm9966/kfc-frontendmicorservice:${{ github.sha }}
           docker push ghcr.io/ptm9966/kfc-frontendmicorservice:latest
           docker push ghcr.io/ptm9966/kfc-cartmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-cartmicroservice:latest
           docker push ghcr.io/ptm9966/kfc-usermicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-usermicroservice:latest
           docker push ghcr.io/ptm9966/kfc-productmicroservice:${{ github.sha }}
+          docker push ghcr.io/ptm9966/kfc-productmicroservice:latest
           docker push ghcr.io/ptm9966/kfc-ordersmicroservice:${{ github.sha }}
-    
+          docker push ghcr.io/ptm9966/kfc-ordersmicroservice:latest
 
 
 
