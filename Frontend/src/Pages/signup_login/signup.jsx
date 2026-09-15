@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Signup.css"
 import { Link, useNavigate } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { USERS_API_BASE_URL } from "../../config/api";
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -9,7 +10,53 @@ const SignUp = () => {
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
 
+  const { loginWithRedirect, isAuthenticated, user } = useAuth0();
   let navigate = useNavigate();
+
+  const handleAuth0Signup = () => {
+    const auth0Domain = process.env.REACT_APP_AUTH0_DOMAIN;
+    const auth0ClientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+    const auth0CallbackUrl = process.env.REACT_APP_AUTH0_CALLBACK_URL || window.location.origin;
+
+    if (!auth0Domain || !auth0ClientId) {
+      alert("Auth0 is not configured yet. Add REACT_APP_AUTH0_DOMAIN and REACT_APP_AUTH0_CLIENT_ID to your frontend .env file.");
+      return;
+    }
+
+    const redirectConfig = {
+      authorizationParams: {
+        screen_hint: "signup",
+        redirect_uri: auth0CallbackUrl,
+      },
+    };
+
+    if (typeof loginWithRedirect === "function") {
+      loginWithRedirect(redirectConfig);
+      return;
+    }
+
+    const authUrl = new URL(`https://${auth0Domain}/authorize`);
+    authUrl.searchParams.set("client_id", auth0ClientId);
+    authUrl.searchParams.set("redirect_uri", auth0CallbackUrl);
+    authUrl.searchParams.set("response_type", "code");
+    authUrl.searchParams.set("scope", "openid profile email");
+    authUrl.searchParams.set("screen_hint", "signup");
+    window.location.href = authUrl.toString();
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const authUser = {
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        authProvider: "auth0",
+        sub: user.sub,
+      };
+      localStorage.setItem("user", JSON.stringify(authUser));
+      navigate("/menu");
+    }
+  }, [isAuthenticated, user, navigate]);
 
   async function registerUser(event) {
     event.preventDefault();
@@ -28,11 +75,9 @@ const SignUp = () => {
     const data = await response.json();
     if (response.ok && data) {
         console.log(data);
+      localStorage.removeItem("user");
       alert(data.message);
-      // const timer = setTimeout(() => {
-        navigate("/login");
-      // }, 2000);
-      // return () => clearTimeout(timer);
+      navigate("/login", { replace: true });
     } else {
       alert(data.message || "Signup failed");
     }
@@ -121,6 +166,16 @@ const SignUp = () => {
               </div>
               <div className="signupBtndiv">
                 <input type="submit" value="Create Account" />
+              </div>
+              <div className="signupBtndiv" style={{ marginTop: "12px" }}>
+                <Button
+                  type="button"
+                  width="100%"
+                  colorScheme="purple"
+                  onClick={handleAuth0Signup}
+                >
+                  Continue with Auth0
+                </Button>
               </div>
               <div className="redirecttologin">
                 <p className="redirectlogintext">

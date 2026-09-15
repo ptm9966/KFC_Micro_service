@@ -1,5 +1,4 @@
 // import { ReactNode } from 'react';
-import StoreBadge from 'react-store-badge';
 import {
   Box,
   Container,
@@ -85,16 +84,30 @@ export default function LargeWithAppLinksAndSocial() {
 
           <Stack align={'flex-start'} >
             <ListHeader>Install App</ListHeader>
-            <StoreBadge 
-              name="KFC"
-              appStoreUrl="https://apps.apple.com/in/app/kfc-india/id915824379"
-            />
-            <StoreBadge 
-              name="KFC"
-              googlePlayUrl="https://play.google.com/store/apps/details?id=com.yum.kfc"
-            />
-            {/* <AppStoreBadge />
-            <PlayStoreBadge /> */}
+            <Link
+              href="https://apps.apple.com/in/app/kfc-india/id915824379"
+              target="_blank"
+              rel="noreferrer"
+              px={3}
+              py={2}
+              borderRadius="md"
+              bg="whiteAlpha.200"
+              _hover={{ textDecoration: 'none', bg: 'whiteAlpha.300' }}
+            >
+              App Store
+            </Link>
+            <Link
+              href="https://play.google.com/store/apps/details?id=com.yum.kfc"
+              target="_blank"
+              rel="noreferrer"
+              px={3}
+              py={2}
+              borderRadius="md"
+              bg="whiteAlpha.200"
+              _hover={{ textDecoration: 'none', bg: 'whiteAlpha.300' }}
+            >
+              Google Play
+            </Link>
           </Stack>
         </SimpleGrid>
       </Container>

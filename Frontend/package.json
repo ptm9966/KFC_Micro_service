@@ -7,6 +7,7 @@
     "npm": ">=10.0.0"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",
@@ -27,14 +28,12 @@
     "react-scripts": "5.0.1",
     "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
-    "react-store-badge": "^3.0.0",
-    "react-store-badges": "^1.5.1",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
+    "serve": "^14.2.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.1",
-    "web-vitals": "^3.3.2",
-    "serve": "^14.2.0"
+    "web-vitals": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

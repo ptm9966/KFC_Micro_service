@@ -15,6 +15,7 @@ import Confirmation from "../Pages/payment/Confirmationpage";
 import SignoutDetails from "../Pages/SignoutDetail";
 import RequireAdminAuth from "../Components/RequireAuth/RequireAdminAuth";
 import RequireAuth from "../Components/RequireAuth/RequireAuth";
+import Auth0Callback from "../Pages/Auth0Callback";
 
 function AllRoutes() {
   return (
@@ -41,6 +42,7 @@ function AllRoutes() {
         <Route path="/payment" element={ <RequireAuth> <CardPayment /> </RequireAuth>} />
         <Route path="/confirmation" element={<RequireAuth> <Confirmation /> </RequireAuth>} />
         <Route path="/login" element={ <Login /> } />
+        <Route path="/callback" element={<Auth0Callback />} />
         <Route path="/admin" element={<RequireAdminAuth> <Admin /> </RequireAdminAuth>} />
         <Route path="/signup" element={ <SignUp />} />
         <Route path="/signout" element={ <SignoutDetails /> } />
