@@ -1,0 +1,118 @@
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_URL || 'http://localhost:8082';
+const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'dev-6l85tc0ex15xt2oe.us.auth0.com';
+const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || 'YrM6Y9CEDia7lM1b5UBZJJdD0IY97iDE';
+const getAuth0CallbackUrl = () =>
+  process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL ||
+  (typeof window !== 'undefined' ? `${window.location.origin}/callback` : 'http://localhost:3000/callback');
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        router.replace('/menu');
+      }
+    }
+  }, [router]);
+
+  const handleAuth0Login = () => {
+    if (!AUTH0_DOMAIN || !AUTH0_CLIENT_ID) {
+      alert('Auth0 is not configured yet. Add NEXT_PUBLIC_AUTH0_DOMAIN and NEXT_PUBLIC_AUTH0_CLIENT_ID to your frontend environment.');
+      return;
+    }
+
+    const authUrl = new URL(`https://${AUTH0_DOMAIN}/authorize`);
+    authUrl.searchParams.set('client_id', AUTH0_CLIENT_ID);
+    authUrl.searchParams.set('redirect_uri', getAuth0CallbackUrl());
+    authUrl.searchParams.set('response_type', 'code');
+    authUrl.searchParams.set('scope', 'openid profile email');
+    authUrl.searchParams.set('screen_hint', 'login');
+    window.location.href = authUrl.toString();
+  };
+
+  async function loginUser(event) {
+    event.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await fetch(`${USERS_API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Please check mobile number or password');
+        return;
+      }
+
+      if (data?.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user || { name: 'KFC User' }));
+        window.dispatchEvent(new Event('user-session-change'));
+        router.replace('/menu');
+      } else {
+        alert('Please check mobile number or password');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Please signup first');
+      router.push('/signup');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="page-shell">
+      <div className="auth-wrap">
+        <div className="auth-card">
+          <h1 className="page-title" style={{ marginBottom: 8 }}>Log in to KFC</h1>
+          <p className="page-subtitle">Continue with your account or use a quick social login.</p>
+
+          <form className="auth-form" onSubmit={loginUser}>
+            <input
+              className="text-input"
+              placeholder="Mobile number"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              required
+            />
+            <input
+              className="text-input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button className="primary-btn" type="submit" disabled={loading}>
+              {loading ? 'Logging in...' : 'Log In'}
+            </button>
+            <button className="secondary-btn" type="button" onClick={handleAuth0Login}>
+              Continue with Auth0
+            </button>
+          </form>
+
+          <p style={{ marginTop: 18 }}>
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="auth-link">Join Now</Link>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
