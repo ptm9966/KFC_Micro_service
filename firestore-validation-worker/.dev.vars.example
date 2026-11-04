@@ -1,0 +1,5 @@
+FIREBASE_PROJECT_ID="your-google-cloud-project-id"
+FIREBASE_CLIENT_EMAIL="firebase-adminsdk-xxxxx@your-google-cloud-project-id.iam.gserviceaccount.com"
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+FIRESTORE_USERS_COLLECTION="users"
+CORS_ORIGIN="*"

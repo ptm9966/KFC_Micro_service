@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_URL || 'http://localhost:8082';
 const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'dev-6l85tc0ex15xt2oe.us.auth0.com';
@@ -18,6 +18,11 @@ export default function SignupPage() {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const emailFromQuery = new URLSearchParams(window.location.search).get('email');
+    if (emailFromQuery) setEmail(emailFromQuery);
+  }, []);
 
   const handleAuth0Signup = () => {
     if (!AUTH0_DOMAIN || !AUTH0_CLIENT_ID) {

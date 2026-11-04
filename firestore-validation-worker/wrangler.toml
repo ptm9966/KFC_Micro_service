@@ -1,0 +1,13 @@
+name = "kfc-user-service"
+main = "src/index.js"
+compatibility_date = "2026-09-18"
+
+[vars]
+FIRESTORE_USERS_COLLECTION = "users"
+CORS_ORIGIN = "*"
+
+# Set these as encrypted Worker secrets. Do not put values in this file.
+# wrangler secret put FIREBASE_PROJECT_ID
+# wrangler secret put FIREBASE_CLIENT_EMAIL
+# wrangler secret put FIREBASE_PRIVATE_KEY
+# wrangler secret put FIRESTORE_SYNC_SECRET

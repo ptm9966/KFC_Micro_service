@@ -5,6 +5,11 @@ import { useEffect, useMemo, useState } from 'react';
 
 const CART_API_BASE_URL = process.env.NEXT_PUBLIC_CART_API_URL || 'http://localhost:8080';
 
+function getAuthHeaders() {
+  const token = localStorage.getItem('id_token') || localStorage.getItem('token') || localStorage.getItem('auth_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export default function CartPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +19,9 @@ export default function CartPage() {
     const fetchCart = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${CART_API_BASE_URL}/api/cart`);
+        const response = await fetch(`${CART_API_BASE_URL}/api/cart`, {
+          headers: getAuthHeaders(),
+        });
 
         if (!response.ok) {
           throw new Error('Unable to load cart from backend');

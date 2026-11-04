@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reset password | KFC</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <main class="auth-shell">
+      <div class="brand">KFC Rewards</div>
+      <h1>Choose a new password</h1>
+      <p class="subtitle">Create a new password for your KFC account.</p>
+      <form>
+        <label class="field"><span>New password</span><input name="password-reset" type="password" autocomplete="new-password" required></label>
+        <label class="field"><span>Confirm password</span><input name="re-enter-password" type="password" autocomplete="new-password" required></label>
+        <p class="helper" data-error hidden></p>
+        <button type="submit">Update password</button>
+      </form>
+      <p class="helper">Secured by Auth0.</p>
+    </main>
+    <script type="module" src="../assets/acul.js"></script>
+  </body>
+</html>

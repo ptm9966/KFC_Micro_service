@@ -10,6 +10,19 @@ This is the User/Auth microservice for the KFC/KGF fullstack application. It han
 - Token verification
 - Secure password storage with salt
 
+## Auth0 email check
+
+`POST /auth/auth0/check-email` checks Auth0 before the frontend opens hosted login or signup.
+Configure these server-only variables on the user service:
+
+```env
+AUTH0_DOMAIN=dev-6l85tc0ex15xt2oe.us.auth0.com
+AUTH0_MGMT_CLIENT_ID=your-management-api-client-id
+AUTH0_MGMT_CLIENT_SECRET=your-management-api-client-secret
+```
+
+The Auth0 application must have a Machine to Machine application authorized for the Auth0 Management API with `read:users` and `read:users_app_metadata` scopes.
+
 ## API Endpoints
 
 ### POST /auth/signup

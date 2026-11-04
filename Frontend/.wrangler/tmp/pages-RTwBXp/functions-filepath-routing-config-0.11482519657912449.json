@@ -1,0 +1,21 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/auth0/check-email",
+      "mountPath": "/api/auth0",
+      "method": "POST",
+      "module": [
+        "api/auth0/check-email.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/auth0/token",
+      "mountPath": "/api/auth0",
+      "method": "POST",
+      "module": [
+        "api/auth0/token.js:onRequestPost"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

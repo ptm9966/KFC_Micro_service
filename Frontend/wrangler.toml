@@ -1,3 +1,6 @@
-name = "kfc-pages"
+name = "kfc-frontend-pages"
 compatibility_date = "2026-05-03"
 pages_build_output_dir = "./out"
+
+[vars]
+AUTH0_DOMAIN = "login.bikkam.online"

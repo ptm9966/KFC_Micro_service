@@ -5,6 +5,55 @@ const Users = require("./user.model");
 
 const userRouter = express.Router();
 
+async function getAuth0ManagementToken() {
+    const domain = process.env.AUTH0_DOMAIN;
+    const clientId = process.env.AUTH0_MGMT_CLIENT_ID;
+    const clientSecret = process.env.AUTH0_MGMT_CLIENT_SECRET;
+
+    if (!domain || !clientId || !clientSecret) {
+        throw new Error("Auth0 Management API is not configured");
+    }
+
+    const response = await fetch(`https://${domain}/oauth/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            client_id: clientId,
+            client_secret: clientSecret,
+            audience: `https://${domain}/api/v2/`,
+            grant_type: "client_credentials",
+        }),
+    });
+
+    if (!response.ok) throw new Error(`Auth0 token request failed: ${response.status}`);
+    const data = await response.json();
+    return data.access_token;
+}
+
+userRouter.post("/auth0/check-email", async (req, res) => {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+
+    if (!email) return res.status(400).send({ message: "Email is required" });
+
+    try {
+        const managementToken = await getAuth0ManagementToken();
+        const domain = process.env.AUTH0_DOMAIN;
+        const url = new URL(`https://${domain}/api/v2/users-by-email`);
+        url.searchParams.set("email", email);
+
+        const response = await fetch(url, {
+            headers: { Authorization: `Bearer ${managementToken}` },
+        });
+
+        if (!response.ok) throw new Error(`Auth0 user lookup failed: ${response.status}`);
+        const users = await response.json();
+        return res.send({ exists: Array.isArray(users) && users.length > 0 });
+    } catch (error) {
+        console.error("Auth0 email check failed:", error);
+        return res.status(503).send({ message: "Unable to check Auth0 account" });
+    }
+});
+
 const hashPassword = (password, salt = crypto.randomBytes(16).toString("hex")) => ({
     salt,
     passwordHash: crypto.scryptSync(password, salt, 64).toString("hex"),

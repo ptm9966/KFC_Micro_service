@@ -1,45 +1,94 @@
 import Link from 'next/link';
+import MenuClient from './menu/MenuClient';
+import { getMenuCategories, getMenuItems } from '../lib/contentful';
 
 const categories = [
-  { name: 'HOT DEALS', color: 'sunset' },
-  { name: 'CHICKEN BUCKETS', color: 'ember' },
-  { name: 'HOT LAUNCHES', color: 'gold' },
-  { name: 'BOX MEALS', color: 'crimson' },
-  { name: 'BURGERS', color: 'sand' },
-  { name: 'BIRIYANI BUCKETS', color: 'chili' },
-  { name: 'SNACKS', color: 'steel' },
-  { name: 'VIEW ALL MENU', color: 'charcoal' },
+  'sunset', 'ember', 'gold', 'crimson', 'sand', 'chili', 'steel', 'charcoal',
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  let menuItems = [];
+  let menuCategories = [];
+
+  try {
+    [menuItems, menuCategories] = await Promise.all([getMenuItems(), getMenuCategories()]);
+  } catch (error) {
+    console.error('Home menu fetch error:', error);
+  }
+
   return (
     <main className="page-shell">
       <section className="hero-banner">
+        <div className="rewards-icon" aria-hidden="true">★</div>
         <div className="hero-copy">
-          <p className="eyebrow">Let&apos;s order for delivery, pickup, or dine-in</p>
-          <h1>Fresh, hot, and made to satisfy every craving.</h1>
+          <p className="eyebrow">Make every order count</p>
+          <h1>Join KFC rewards</h1>
           <p className="lead">
-            A classic KFC-inspired ordering experience with guest login, account signup, and quick checkout flow.
+            Earn points on every order and get more insider offers, exclusive deals, and delicious rewards.
           </p>
-          <div className="cta-row">
-            <Link href="/menu" className="primary-btn large">Start Order</Link>
-            <Link href="/login" className="secondary-btn large">Login</Link>
-          </div>
         </div>
-
-        <div className="promo-visual" aria-label="KFC promotional image area">
-          <div className="promo-card promo-card-top" />
-          <div className="promo-card promo-card-bottom" />
+        <div className="hero-actions">
+          <Link href="/login" className="primary-btn large">Join Now</Link>
+          <span>Already a member? <Link href="/login" className="inline-link">Sign in</Link></span>
         </div>
       </section>
 
       <section className="category-grid">
-        {categories.map((item) => (
-          <article key={item.name} className={`category-card ${item.color}`}>
-            <div className="card-image" />
-            <h3>{item.name}</h3>
+        {menuCategories.map((category, index) => {
+          const categoryItem = menuItems.find(
+            (item) => item.categoryId === category._id && item.image,
+          );
+          const categoryItems = menuItems.filter((item) => item.categoryId === category._id);
+          const color = categories[index % categories.length];
+
+          return (
+          <article
+            key={category._id}
+            className={`category-card ${color}`}
+          >
+            <Link className="category-card-link" href={`/menu?category=${encodeURIComponent(category._id)}`}>
+              <div
+                className="card-image"
+                style={categoryItem?.image ? {
+                  backgroundImage: `url("${categoryItem.image}"), linear-gradient(135deg, #ffd7ad, #d83f37, #6d1818)`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                } : undefined}
+              />
+              <div className="category-card-copy">
+                <h3>{category.name}</h3>
+                <span>{categoryItems.length} {categoryItems.length === 1 ? 'item' : 'items'}</span>
+                <p>Fresh favourites and signature choices for every craving.</p>
+              </div>
+            </Link>
           </article>
-        ))}
+          );
+        })}
+        <article className={`category-card ${categories[categories.length - 1]}`}>
+          <Link className="category-card-link" href="/menu">
+            <div className="card-image" />
+            <div className="category-card-copy">
+              <h3>View All Menu</h3>
+              <span>{menuItems.length} items</span>
+              <p>Explore the complete menu and find your next favourite.</p>
+            </div>
+          </Link>
+        </article>
+      </section>
+
+      <section className="home-menu-section">
+        <div className="section-heading">
+          <div>
+            <span className="deal-tag">From our kitchen</span>
+            <h2>Featured menu</h2>
+          </div>
+          <Link href="/menu" className="secondary-btn">View full menu</Link>
+        </div>
+        {menuItems.length > 0 ? (
+          <MenuClient items={menuItems.slice(0, 6)} />
+        ) : (
+          <p className="page-subtitle">Menu items are temporarily unavailable.</p>
+        )}
       </section>
 
       <section className="deal-banner">

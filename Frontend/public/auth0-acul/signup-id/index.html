@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create account | KFC</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <main class="auth-shell">
+      <div class="brand">KFC Rewards</div>
+      <h1>Create your account</h1>
+      <p class="subtitle">Start with your email address.</p>
+      <form>
+        <label class="field"><span>Email address</span><input name="email" type="email" autocomplete="email" required></label>
+        <label class="field"><span>Phone number</span><input name="phone" type="tel" autocomplete="tel"></label>
+        <label class="field"><span>Username</span><input name="username" type="text" autocomplete="username"></label>
+        <p class="helper" data-error hidden></p>
+        <button type="submit">Continue</button>
+      </form>
+      <p class="helper">Secured by Auth0.</p>
+    </main>
+    <script type="module" src="../assets/acul.js"></script>
+  </body>
+</html>

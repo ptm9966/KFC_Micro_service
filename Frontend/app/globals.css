@@ -55,10 +55,11 @@ button {
 }
 
 .site-header {
-  background: #0f0f0f;
-  color: white;
-  padding: 18px 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  color: #332d2a;
+  padding: 10px 28px;
+  border-bottom: 1px solid #eadfd4;
+  box-shadow: 0 4px 12px rgba(37, 27, 20, 0.08);
 }
 
 .site-header-inner {
@@ -79,14 +80,22 @@ button {
 }
 
 .brand-mark {
-  width: 32px;
-  height: 32px;
+  width: 52px;
+  height: 52px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
-  background: var(--brand);
+  border-radius: 50% 50% 42% 42%;
+  background: #e4002b;
   color: white;
+  font-size: 0.78rem;
+}
+
+.brand-name {
+  max-width: 118px;
+  font-size: 0.84rem;
+  line-height: 1.05;
+  text-transform: uppercase;
 }
 
 .nav-links {
@@ -97,8 +106,10 @@ button {
 }
 
 .nav-links a {
-  color: rgba(255,255,255,0.82);
+  color: #332d2a;
   font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
 }
 
 .top-actions {
@@ -131,9 +142,39 @@ button {
 }
 
 .ghost-btn {
-  background: rgba(255,255,255,0.08);
-  color: white;
-  border-color: rgba(255,255,255,0.14);
+  background: #fff;
+  color: #332d2a;
+  border-color: #eadfd4;
+}
+
+.account-link {
+  color: #332d2a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.utility-btn,
+.cart-link {
+  border: 0;
+  background: transparent;
+  color: #332d2a;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.pickup-label {
+  padding-left: 18px;
+  border-left: 1px solid #cfc5bd;
+  color: #6e625b;
+  font-size: 0.7rem;
+  line-height: 1.15;
+}
+
+.pickup-label strong {
+  color: #332d2a;
+  font-size: 0.73rem;
 }
 
 .primary-btn:hover,
@@ -168,10 +209,24 @@ button {
 
 .hero-banner {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 100px 1fr auto;
   gap: 24px;
   align-items: center;
-  padding: 18px 0 28px;
+  margin: 0 6px 28px;
+  padding: 38px 54px;
+  background: #fff7ea;
+}
+
+.rewards-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50% 50% 45% 45%;
+  background: #332d2a;
+  color: #ffc400;
+  font-size: 2.2rem;
+  transform: rotate(-8deg);
 }
 
 .eyebrow {
@@ -186,16 +241,31 @@ button {
 
 .hero-copy h1 {
   margin: 0;
-  font-size: clamp(2.6rem, 6vw, 4.8rem);
-  line-height: 0.96;
-  letter-spacing: -0.06em;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .lead {
-  margin: 18px 0 22px;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 620px;
+  margin: 12px 0 0;
+  color: #4f4540;
+  line-height: 1.5;
+  max-width: 760px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #4f4540;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.inline-link {
+  font-weight: 800;
+  text-decoration: underline;
 }
 
 .cta-row {
@@ -229,33 +299,85 @@ button {
 .category-grid,
 .feature-grid,
 .menu-grid,
-.checkout-grid {
+.checkout-grid,
+.home-menu-section {
   display: grid;
   gap: 18px;
 }
 
+.home-menu-section {
+  margin-top: 36px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
 .category-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 12px;
 }
 
 .category-card {
-  border-radius: 22px;
+  min-height: 118px;
+  border-radius: 2px;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--panel);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
 .card-image {
-  height: 150px;
+  width: 142px;
+  min-width: 142px;
+  height: 100%;
+  min-height: 118px;
   background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.12));
+  background-size: cover;
+  background-position: center;
 }
 
 .category-card h3 {
-  margin: 0;
-  padding: 18px 16px 20px;
-  font-size: 1rem;
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.category-card-link {
+  display: flex;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand {
+  color: inherit;
+  text-decoration: none;
+}
+
+.category-card-copy {
+  padding: 18px 14px;
+}
+
+.category-card-copy span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.category-card-copy p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .sunset .card-image { background: linear-gradient(135deg, #ffd7a1, #ef6633, #9f1f16); }
@@ -471,6 +593,194 @@ button {
   font-weight: 700;
 }
 
+.rewards-login-page {
+  min-height: calc(100vh - 74px);
+  background: linear-gradient(rgba(35, 25, 22, 0.76), rgba(35, 25, 22, 0.76)), url('/King_Of_Food.jpg') center / cover;
+}
+
+.rewards-login-brand {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  background: #fff;
+  position: relative;
+}
+
+.rewards-login-brand > a:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #332d2a;
+  text-decoration: none;
+}
+
+.rewards-login-brand .brand-mark {
+  width: 48px;
+  height: 48px;
+}
+
+.rewards-login-brand .brand-name {
+  max-width: 105px;
+}
+
+.rewards-close {
+  position: absolute;
+  right: 7%;
+  top: 18px;
+  color: #332d2a;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.rewards-login-overlay {
+  min-height: calc(100vh - 152px);
+  display: grid;
+  place-items: center;
+  padding: 54px 20px;
+}
+
+.rewards-login-card {
+  width: min(580px, 100%);
+  padding: 36px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+}
+
+.rewards-kicker {
+  margin: 0 0 18px;
+  color: #8e0d18;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.rewards-login-card h1 {
+  margin: 0 0 28px;
+  color: #332d2a;
+  font-size: clamp(1.8rem, 4vw, 2.35rem);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.rewards-form {
+  display: grid;
+  gap: 8px;
+}
+
+.rewards-form label {
+  color: #332d2a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.rewards-form label span {
+  color: #a00018;
+}
+
+.rewards-form .text-input {
+  border-radius: 0;
+  padding: 14px 16px;
+}
+
+.rewards-helper {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.rewards-submit {
+  width: 100%;
+  border-radius: 0;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.rewards-legal {
+  margin: 26px 0 0;
+  color: #514844;
+  font-size: 0.77rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.rewards-help {
+  margin: 24px 0 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.rewards-help a {
+  color: #332d2a;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.account-setup-page {
+  background: #332b29;
+}
+
+.setup-brand {
+  justify-content: center;
+}
+
+.setup-back {
+  position: absolute;
+  left: 40px;
+  color: #332d2a;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.setup-progress {
+  width: min(440px, calc(100% - 40px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px auto -20px;
+  position: relative;
+  z-index: 1;
+}
+
+.setup-progress span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #c7bdb7;
+  border-radius: 50%;
+  background: #fff;
+  color: #6d625d;
+  font-size: 0.75rem;
+}
+
+.setup-progress span.active { border-color: #332d2a; color: #332d2a; }
+.setup-progress i { width: 190px; border-top: 2px dashed #c7bdb7; }
+.setup-progress div { position: absolute; top: 28px; left: 0; right: 0; display: flex; justify-content: space-around; }
+.setup-progress small { color: #6d625d; text-transform: uppercase; }
+
+.account-setup-card {
+  width: min(640px, calc(100% - 30px));
+  margin: 0 auto;
+  padding: 58px 38px 34px;
+  background: #fff;
+}
+
+.account-setup-card h1 { margin-bottom: 30px; }
+.setup-readonly { background: #fff8ee; }
+.password-rules { margin: 10px 0; color: var(--muted); line-height: 1.8; }
+
+@media (max-width: 900px) {
+  .setup-back { left: 16px; }
+  .account-setup-card { padding: 54px 20px 28px; }
+}
+
 .table-list {
   display: grid;
   gap: 10px;
@@ -507,6 +817,16 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .hero-banner {
+    justify-items: start;
+    padding: 28px 22px;
+  }
+
+  .hero-actions {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
   .nav-links {
     width: 100%;
     justify-content: center;
@@ -515,5 +835,17 @@ button {
   .top-actions {
     width: 100%;
     justify-content: flex-start;
+  }
+
+  .rewards-login-overlay {
+    padding: 28px 14px;
+  }
+
+  .rewards-login-card {
+    padding: 28px 20px;
+  }
+
+  .rewards-close {
+    right: 20px;
   }
 }
