@@ -17,6 +17,10 @@ coverage/
 **/build/
 **/dist/
 **/coverage/
+**/.next/
+**/out/
+**/.wrangler/
+**/*.tsbuildinfo
 
 # Logs
 logs/
@@ -48,3 +52,8 @@ Thumbs.db
 
 # Docker/local overrides
 docker-compose.override.yml
+
+# Cloudflare local secrets
+**/.dev.vars
+**/.dev.vars.*
+!**/.dev.vars.example
