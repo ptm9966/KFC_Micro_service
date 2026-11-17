@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_URL || 'http://localhost:8082';
-const FIRESTORE_VALIDATION_URL = process.env.NEXT_PUBLIC_FIRESTORE_VALIDATION_URL || 'https://kfc-user-service.purushottam3366.workers.dev';
-const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'dev-6l85tc0ex15xt2oe.us.auth0.com';
-const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || 'YrM6Y9CEDia7lM1b5UBZJJdD0IY97iDE';
+const FIRESTORE_VALIDATION_URL = process.env.NEXT_PUBLIC_FIRESTORE_VALIDATION_URL || '';
+const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || '';
+const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || '';
+const EMAIL_AUTH_ENABLED = Boolean(FIRESTORE_VALIDATION_URL && AUTH0_DOMAIN && AUTH0_CLIENT_ID);
 const AUTH0_CONNECTION = process.env.NEXT_PUBLIC_AUTH0_CONNECTION || '';
 const getAuth0CallbackUrl = () =>
   process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL ||
@@ -19,7 +20,7 @@ export default function LoginPage() {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showCredentials, setShowCredentials] = useState(false);
+  const [showCredentials, setShowCredentials] = useState(!EMAIL_AUTH_ENABLED);
   const [authError, setAuthError] = useState('');
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function LoginPage() {
       const params = new URLSearchParams(window.location.search);
       const emailFromQuery = params.get('email');
       const authErrorDescription = params.get('error_description');
-      setShowCredentials(params.get('step') === 'credentials');
+      setShowCredentials(!EMAIL_AUTH_ENABLED || params.get('step') === 'credentials');
       setAuthError(authErrorDescription || '');
       if (emailFromQuery) setEmail(emailFromQuery);
 
@@ -163,6 +164,7 @@ export default function LoginPage() {
                 </button>
               </form>
               <p className="rewards-help"><Link href="/login">Use a different email</Link></p>
+              <p className="rewards-help">Don&apos;t have an account? <Link href="/signup">Sign up</Link></p>
             </>
           ) : (
             <>

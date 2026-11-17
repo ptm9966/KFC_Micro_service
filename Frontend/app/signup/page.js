@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_URL || 'http://localhost:8082';
-const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'dev-6l85tc0ex15xt2oe.us.auth0.com';
-const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || 'YrM6Y9CEDia7lM1b5UBZJJdD0IY97iDE';
+const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN || '';
+const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || '';
+const AUTH0_ENABLED = Boolean(AUTH0_DOMAIN && AUTH0_CLIENT_ID);
 const getAuth0CallbackUrl = () =>
   process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL ||
   (typeof window !== 'undefined' ? `${window.location.origin}/callback` : 'http://localhost:3000/callback');
@@ -115,9 +116,11 @@ export default function SignupPage() {
             <button className="primary-btn" type="submit" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
-            <button className="secondary-btn" type="button" onClick={handleAuth0Signup}>
-              Continue with Auth0
-            </button>
+            {AUTH0_ENABLED && (
+              <button className="secondary-btn" type="button" onClick={handleAuth0Signup}>
+                Continue with Auth0
+              </button>
+            )}
           </form>
 
           <p style={{ marginTop: 18 }}>
